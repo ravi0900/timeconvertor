@@ -37,6 +37,22 @@
         <p>Nanoseconds: <span id="ns"></span></p>
     </div>
 
+    <hr style="margin: 40px 0;">
+
+    <h1>Timestamp to Human date</h1>
+
+    <div class="container">
+        <label>Timestamp: <input type="text" id="timestamp" placeholder="Enter seconds, ms, µs, or ns" style="width: 250px;"></label>
+    </div>
+
+    <button id="convertTsBtn">Timestamp to Human date</button>
+
+    <div id="ts_results">
+        <h2>Converted Dates</h2>
+        <p>GMT/UTC Time: <span id="gmt_time"></span></p>
+        <p>Your Local Time: <span id="local_time"></span></p>
+    </div>
+
     <script>
         document.getElementById('convertBtn').addEventListener('click', function() {
             const year = parseInt(document.getElementById('year').value);
@@ -74,6 +90,54 @@
 
         // Hide results on page load
         document.getElementById('results').style.display = 'none';
+
+        // --- Timestamp to Human Date ---
+        const tsResultsDiv = document.getElementById('ts_results');
+        tsResultsDiv.style.display = 'none'; // Hide on load
+
+        document.getElementById('convertTsBtn').addEventListener('click', function() {
+            const timestampStr = document.getElementById('timestamp').value.trim();
+            if (!timestampStr.match(/^\d+$/)) {
+                if (timestampStr) {
+                    alert("Please enter a valid timestamp (digits only).");
+                }
+                return;
+            }
+
+            let timestamp;
+            try {
+                timestamp = BigInt(timestampStr);
+            } catch (e) {
+                alert("Invalid timestamp value. It might be too large.");
+                return;
+            }
+
+            let dateInMs;
+            // Heuristic to determine unit based on number of digits
+            if (timestampStr.length > 16) { // nanoseconds (e.g. 19 digits)
+                dateInMs = Number(timestamp / 1000000n);
+            } else if (timestampStr.length > 13) { // microseconds (e.g. 16 digits)
+                dateInMs = Number(timestamp / 1000n);
+            } else if (timestampStr.length > 10) { // milliseconds (e.g. 13 digits)
+                dateInMs = Number(timestamp);
+            } else { // seconds (e.g. 10 digits)
+                dateInMs = Number(timestamp * 1000n);
+            }
+
+            const date = new Date(dateInMs);
+
+            const gmtSpan = document.getElementById('gmt_time');
+            const localSpan = document.getElementById('local_time');
+
+            if (isNaN(date.getTime())) {
+                gmtSpan.textContent = 'Invalid Timestamp';
+                localSpan.textContent = 'Invalid Timestamp';
+            } else {
+                gmtSpan.textContent = date.toUTCString();
+                localSpan.textContent = date.toString();
+            }
+            tsResultsDiv.style.display = 'block';
+        });
     </script>
 </body>
 </html>
