@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epoch Converter</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; }
+        h1, h2 { border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        .container { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+        .container label { display: flex; flex-direction: column; }
+        input[type="number"] { padding: 5px; font-size: 1em; }
+        button { padding: 10px 15px; cursor: pointer; font-size: 1em; }
+        #results { margin-top: 20px; }
+        #results p { background-color: #f0f0f0; padding: 10px; border-radius: 5px; font-family: monospace; word-wrap: break-word; }
+        #results span { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Human date to Timestamp</h1>
+
+    <div class="container">
+        <label>Year: <input type="number" id="year" value="2025" required></label>
+        <label>Month: <input type="number" id="month" value="8" min="1" max="12" required></label>
+        <label>Day: <input type="number" id="day" value="7" min="1" max="31" required></label>
+        <label>Hour (UTC): <input type="number" id="hour" value="0" min="0" max="23" required></label>
+        <label>Minute: <input type="number" id="minute" value="0" min="0" max="59" required></label>
+        <label>Second: <input type="number" id="second" value="0" min="0" max="59" required></label>
+    </div>
+
+    <button id="convertBtn">Human date to Timestamp</button>
+
+    <div id="results">
+        <h2>UTC Timestamps</h2>
+        <p>Milliseconds: <span id="ms"></span></p>
+        <p>Microseconds: <span id="us"></span></p>
+        <p>Nanoseconds: <span id="ns"></span></p>
+    </div>
+
+    <script>
+        document.getElementById('convertBtn').addEventListener('click', function() {
+            const year = parseInt(document.getElementById('year').value);
+            const month = parseInt(document.getElementById('month').value);
+            const day = parseInt(document.getElementById('day').value);
+            const hour = parseInt(document.getElementById('hour').value) || 0;
+            const minute = parseInt(document.getElementById('minute').value) || 0;
+            const second = parseInt(document.getElementById('second').value) || 0;
+
+            // Month is 0-indexed in JavaScript Date, so we subtract 1.
+            const dateInMs = Date.UTC(year, month - 1, day, hour, minute, second);
+
+            const resultsDiv = document.getElementById('results');
+            const msSpan = document.getElementById('ms');
+            const usSpan = document.getElementById('us');
+            const nsSpan = document.getElementById('ns');
+
+            if (isNaN(dateInMs)) {
+                msSpan.textContent = 'Invalid Date';
+                usSpan.textContent = 'Invalid Date';
+                nsSpan.textContent = 'Invalid Date';
+                resultsDiv.style.display = 'block';
+                return;
+            }
+
+            const ms = BigInt(dateInMs);
+            const us = ms * 1000n;
+            const ns = us * 1000n;
+
+            msSpan.textContent = ms.toString();
+            usSpan.textContent = us.toString();
+            nsSpan.textContent = ns.toString();
+            resultsDiv.style.display = 'block';
+        });
+
+        // Hide results on page load
+        document.getElementById('results').style.display = 'none';
+    </script>
+</body>
+</html>
