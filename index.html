@@ -23,9 +23,16 @@
         <label>Year: <input type="number" id="year" value="2025" required></label>
         <label>Month: <input type="number" id="month" value="8" min="1" max="12" required></label>
         <label>Day: <input type="number" id="day" value="7" min="1" max="31" required></label>
-        <label>Hour (UTC): <input type="number" id="hour" value="0" min="0" max="23" required></label>
+        <label>Hour: <input type="number" id="hour" value="0" min="0" max="23" required></label>
         <label>Minute: <input type="number" id="minute" value="0" min="0" max="59" required></label>
         <label>Second: <input type="number" id="second" value="0" min="0" max="59" required></label>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <input type="radio" id="tz_gmt" name="timezone_type" value="gmt" checked>
+        <label for="tz_gmt" style="display: inline;">GMT/UTC</label>
+        <input type="radio" id="tz_local" name="timezone_type" value="local" style="margin-left: 20px;">
+        <label for="tz_local" style="display: inline;">Local Time</label>
     </div>
 
     <button id="convertBtn">Human date to Timestamp</button>
@@ -51,9 +58,40 @@
         <h2>Converted Dates</h2>
         <p>GMT/UTC Time: <span id="gmt_time"></span></p>
         <p>Your Local Time: <span id="local_time"></span></p>
+        <p>Relative Time: <span id="relative_time"></span></p>
     </div>
 
     <script>
+        function getRelativeTime(date) {
+            const now = new Date();
+            const diffInSeconds = (date.getTime() - now.getTime()) / 1000;
+            
+            const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+            const units = [
+                { unit: 'year', seconds: 31536000 },
+                { unit: 'month', seconds: 2592000 },
+                { unit: 'week', seconds: 604800 },
+                { unit: 'day', seconds: 86400 },
+                { unit: 'hour', seconds: 3600 },
+                { unit: 'minute', seconds: 60 },
+            ];
+
+            for (const { unit, seconds } of units) {
+                if (Math.abs(diffInSeconds) >= seconds) {
+                    const value = Math.round(diffInSeconds / seconds);
+                    return rtf.format(value, unit);
+                }
+            }
+            
+            const value = Math.round(diffInSeconds);
+            if (Math.abs(value) > 0) {
+                return rtf.format(value, 'second');
+            }
+            
+            return 'just now';
+        }
+
         document.getElementById('convertBtn').addEventListener('click', function() {
             const year = parseInt(document.getElementById('year').value);
             const month = parseInt(document.getElementById('month').value);
@@ -62,8 +100,15 @@
             const minute = parseInt(document.getElementById('minute').value) || 0;
             const second = parseInt(document.getElementById('second').value) || 0;
 
+            const isLocal = document.getElementById('tz_local').checked;
+
+            let dateInMs;
             // Month is 0-indexed in JavaScript Date, so we subtract 1.
-            const dateInMs = Date.UTC(year, month - 1, day, hour, minute, second);
+            if (isLocal) {
+                dateInMs = new Date(year, month - 1, day, hour, minute, second).getTime();
+            } else {
+                dateInMs = Date.UTC(year, month - 1, day, hour, minute, second);
+            }
 
             const resultsDiv = document.getElementById('results');
             const msSpan = document.getElementById('ms');
@@ -128,13 +173,16 @@
 
             const gmtSpan = document.getElementById('gmt_time');
             const localSpan = document.getElementById('local_time');
+            const relativeSpan = document.getElementById('relative_time');
 
             if (isNaN(date.getTime())) {
                 gmtSpan.textContent = 'Invalid Timestamp';
                 localSpan.textContent = 'Invalid Timestamp';
+                relativeSpan.textContent = '';
             } else {
                 gmtSpan.textContent = date.toUTCString();
                 localSpan.textContent = date.toString();
+                relativeSpan.textContent = getRelativeTime(date);
             }
             tsResultsDiv.style.display = 'block';
         });
