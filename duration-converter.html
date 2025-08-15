@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duration Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">UTC Date Converter</a></li>
+            <li><a href="iso-converter.html">ISO 8601 Converter</a></li>
+            <li><a href="duration-converter.html" class="active">Duration Converter</a></li>
+        </ul>
+    </nav>
+
+    <div class="card">
+        <h1>Days to Hours, Minutes, Seconds</h1>
+
+        <div class="container">
+            <label>Days: <input type="number" id="days_input" placeholder="Enter number of days" min="0" style="width: 200px;"></label>
+        </div>
+
+        <button id="convertDurationBtn">Convert</button>
+
+        <div id="duration_results">
+            <h2>Calculated Duration</h2>
+            <p>Hours: <span id="duration_hours"></span></p>
+            <p>Minutes: <span id="duration_minutes"></span></p>
+            <p>Seconds: <span id="duration_seconds"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('convertDurationBtn').addEventListener('click', function() {
+            const daysInput = document.getElementById('days_input').value;
+            const days = parseFloat(daysInput);
+
+            const resultsDiv = document.getElementById('duration_results');
+            const hoursSpan = document.getElementById('duration_hours');
+            const minutesSpan = document.getElementById('duration_minutes');
+            const secondsSpan = document.getElementById('duration_seconds');
+
+            if (isNaN(days) || days < 0) {
+                hoursSpan.textContent = 'Invalid input';
+                minutesSpan.textContent = 'Invalid input';
+                secondsSpan.textContent = 'Invalid input';
+            } else {
+                const hours = days * 24;
+                const minutes = hours * 60;
+                const seconds = minutes * 60;
+
+                hoursSpan.textContent = hours.toLocaleString();
+                minutesSpan.textContent = minutes.toLocaleString();
+                secondsSpan.textContent = seconds.toLocaleString();
+            }
+            resultsDiv.style.display = 'block';
+        });
+
+        // Hide results on page load
+        document.getElementById('duration_results').style.display = 'none';
+    </script>
+</body>
+</html>
