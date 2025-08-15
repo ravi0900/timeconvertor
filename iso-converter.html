@@ -39,6 +39,34 @@
     </div>
 
     <div class="card">
+        <h1>Human Date to ISO 8601 Date</h1>
+
+        <div class="container">
+            <label>Year: <input type="number" id="hd_year" required></label>
+            <label>Month: <input type="number" id="hd_month" min="1" max="12" required></label>
+            <label>Day: <input type="number" id="hd_day" min="1" max="31" required></label>
+            <label>Hour: <input type="number" id="hd_hour" min="0" max="23" required></label>
+            <label>Minute: <input type="number" id="hd_minute" min="0" max="59" required></label>
+            <label>Second: <input type="number" id="hd_second" min="0" max="59" required></label>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <input type="radio" id="hd_tz_gmt" name="hd_timezone_type" value="gmt" checked>
+            <label for="hd_tz_gmt" style="display: inline;">GMT/UTC</label>
+            <input type="radio" id="hd_tz_local" name="hd_timezone_type" value="local" style="margin-left: 20px;">
+            <label for="hd_tz_local" style="display: inline;">Local Time</label>
+        </div>
+
+        <button id="convertHdBtn">Convert to ISO Date</button>
+
+        <div id="hd_results">
+            <h2>ISO 8601 Dates</h2>
+            <p>ISO 8601 (UTC): <span id="hd_iso_utc"></span></p>
+            <p>ISO 8601 (Local): <span id="hd_iso_local"></span></p>
+        </div>
+    </div>
+
+    <div class="card">
         <h1>Timestamp to ISO 8601 Date</h1>
 
         <div class="container">
@@ -130,6 +158,54 @@
             dateResultsDiv.style.display = 'block';
         });
 
+        document.getElementById('convertHdBtn').addEventListener('click', function() {
+            const year = parseInt(document.getElementById('hd_year').value);
+            const month = parseInt(document.getElementById('hd_month').value);
+            const day = parseInt(document.getElementById('hd_day').value);
+            const hour = parseInt(document.getElementById('hd_hour').value) || 0;
+            const minute = parseInt(document.getElementById('hd_minute').value) || 0;
+            const second = parseInt(document.getElementById('hd_second').value) || 0;
+
+            const isLocal = document.getElementById('hd_tz_local').checked;
+
+            let dateInMs;
+            // Month is 0-indexed in JavaScript Date, so we subtract 1.
+            if (isLocal) {
+                dateInMs = new Date(year, month - 1, day, hour, minute, second).getTime();
+            } else {
+                dateInMs = Date.UTC(year, month - 1, day, hour, minute, second);
+            }
+
+            const hdResultsDiv = document.getElementById('hd_results');
+            const isoUtcSpan = document.getElementById('hd_iso_utc');
+            const isoLocalSpan = document.getElementById('hd_iso_local');
+
+            if (isNaN(dateInMs)) {
+                isoUtcSpan.textContent = 'Invalid Date';
+                isoLocalSpan.textContent = 'Invalid Date';
+            } else {
+                const date = new Date(dateInMs);
+                isoUtcSpan.textContent = date.toISOString();
+
+                // For local ISO string, we need to build it manually to include timezone offset
+                const tzOffset = -date.getTimezoneOffset();
+                const diff = tzOffset >= 0 ? '+' : '-';
+                const pad = (num) => (num < 10 ? '0' : '') + num;
+                
+                const localIsoString = date.getFullYear() +
+                    '-' + pad(date.getMonth() + 1) +
+                    '-' + pad(date.getDate()) +
+                    'T' + pad(date.getHours()) +
+                    ':' + pad(date.getMinutes()) +
+                    ':' + pad(date.getSeconds()) +
+                    diff + pad(Math.floor(Math.abs(tzOffset) / 60)) +
+                    ':' + pad(Math.abs(tzOffset) % 60);
+
+                isoLocalSpan.textContent = localIsoString;
+            }
+            hdResultsDiv.style.display = 'block';
+        });
+
         document.getElementById('convertTsBtn').addEventListener('click', function() {
             const timestampStr = document.getElementById('timestamp').value.trim();
             if (!timestampStr.match(/^\d+$/)) {
@@ -188,10 +264,22 @@
             document.getElementById('ts_results').style.display = 'block';
         });
 
+        // Prefill human date inputs with current date/time on page load
+        (function() {
+            const now = new Date();
+            document.getElementById('hd_year').value = now.getFullYear();
+            document.getElementById('hd_month').value = now.getMonth() + 1; // Month is 0-indexed
+            document.getElementById('hd_day').value = now.getDate();
+            document.getElementById('hd_hour').value = now.getHours();
+            document.getElementById('hd_minute').value = now.getMinutes();
+            document.getElementById('hd_second').value = now.getSeconds();
+        })();
+
         // Hide results on page load
         document.getElementById('iso_results').style.display = 'none';
         document.getElementById('ts_results').style.display = 'none';
         document.getElementById('iso_date_results').style.display = 'none';
+        document.getElementById('hd_results').style.display = 'none';
     </script>
 </body>
 </html>

@@ -87,7 +87,7 @@ button:hover {
     background-color: #0056b3;
 }
 
-#results p, #ts_results p, #iso_results p, #iso_date_results p, #date_to_iso_results p {
+#results p, #ts_results p, #iso_results p, #iso_date_results p, #date_to_iso_results p, #hd_results p {
     background-color: #e9ecef;
     padding: 10px;
     border-radius: 5px;
@@ -96,6 +96,6 @@ button:hover {
     border-left: 4px solid #007bff;
 }
 
-#results span, #ts_results span, #iso_results span, #iso_date_results span, #date_to_iso_results span {
+#results span, #ts_results span, #iso_results span, #iso_date_results span, #date_to_iso_results span, #hd_results span {
     font-weight: bold;
 }
