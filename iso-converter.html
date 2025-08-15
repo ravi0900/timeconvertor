@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISO 8601 Epoch Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">UTC Date Converter</a></li>
+            <li><a href="iso-converter.html" class="active">ISO 8601 Converter</a></li>
+        </ul>
+    </nav>
+
+    <div class="card">
+        <h1>ISO 8601 Date to Timestamp</h1>
+
+        <div class="container">
+            <label>ISO 8601 Date String: <input type="text" id="iso_string" placeholder="e.g., 2025-08-31T23:59:59+05:30" style="width: 300px;"></label>
+        </div>
+
+        <button id="convertIsoBtn">ISO Date to Timestamp</button>
+
+        <div id="iso_results">
+            <h2>UTC Timestamps</h2>
+            <p>Milliseconds: <span id="iso_ms"></span></p>
+            <p>Microseconds: <span id="iso_us"></span></p>
+            <p>Nanoseconds: <span id="iso_ns"></span></p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h1>Timestamp to ISO 8601 Date</h1>
+
+        <div class="container">
+            <label>Timestamp: <input type="text" id="timestamp" placeholder="Enter seconds, ms, µs, or ns" style="width: 250px;"></label>
+        </div>
+
+        <button id="convertTsBtn">Timestamp to ISO Date</button>
+
+        <div id="ts_results">
+            <h2>Converted Dates</h2>
+            <p>ISO 8601 (UTC): <span id="iso_utc_time"></span></p>
+            <p>ISO 8601 (Local): <span id="iso_local_time"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('convertIsoBtn').addEventListener('click', function() {
+            const isoString = document.getElementById('iso_string').value.trim();
+            if (!isoString) {
+                alert('Please enter an ISO 8601 date string.');
+                return;
+            }
+
+            const date = new Date(isoString);
+            const dateInMs = date.getTime();
+
+            const resultsDiv = document.getElementById('iso_results');
+            const msSpan = document.getElementById('iso_ms');
+            const usSpan = document.getElementById('iso_us');
+            const nsSpan = document.getElementById('iso_ns');
+
+            if (isNaN(dateInMs)) {
+                msSpan.textContent = 'Invalid Date String';
+                usSpan.textContent = 'Invalid Date String';
+                nsSpan.textContent = 'Invalid Date String';
+            } else {
+                const ms = BigInt(dateInMs);
+                const us = ms * 1000n;
+                const ns = us * 1000n;
+
+                msSpan.textContent = ms.toString();
+                usSpan.textContent = us.toString();
+                nsSpan.textContent = ns.toString();
+            }
+            resultsDiv.style.display = 'block';
+        });
+
+        document.getElementById('convertTsBtn').addEventListener('click', function() {
+            const timestampStr = document.getElementById('timestamp').value.trim();
+            if (!timestampStr.match(/^\d+$/)) {
+                if (timestampStr) {
+                    alert("Please enter a valid timestamp (digits only).");
+                }
+                return;
+            }
+
+            let timestamp;
+            try {
+                timestamp = BigInt(timestampStr);
+            } catch (e) {
+                alert("Invalid timestamp value. It might be too large.");
+                return;
+            }
+
+            let dateInMs;
+            if (timestampStr.length > 16) { // nanoseconds
+                dateInMs = Number(timestamp / 1000000n);
+            } else if (timestampStr.length > 13) { // microseconds
+                dateInMs = Number(timestamp / 1000n);
+            } else if (timestampStr.length > 10) { // milliseconds
+                dateInMs = Number(timestamp);
+            } else { // seconds
+                dateInMs = Number(timestamp * 1000n);
+            }
+
+            const date = new Date(dateInMs);
+
+            const isoUtcSpan = document.getElementById('iso_utc_time');
+            const isoLocalSpan = document.getElementById('iso_local_time');
+            
+            if (isNaN(date.getTime())) {
+                isoUtcSpan.textContent = 'Invalid Timestamp';
+                isoLocalSpan.textContent = 'Invalid Timestamp';
+            } else {
+                isoUtcSpan.textContent = date.toISOString();
+                
+                // For local ISO string, we need to build it manually to include timezone offset
+                const tzOffset = -date.getTimezoneOffset();
+                const diff = tzOffset >= 0 ? '+' : '-';
+                const pad = (num) => (num < 10 ? '0' : '') + num;
+                
+                const localIsoString = date.getFullYear() +
+                    '-' + pad(date.getMonth() + 1) +
+                    '-' + pad(date.getDate()) +
+                    'T' + pad(date.getHours()) +
+                    ':' + pad(date.getMinutes()) +
+                    ':' + pad(date.getSeconds()) +
+                    diff + pad(Math.floor(Math.abs(tzOffset) / 60)) +
+                    ':' + pad(Math.abs(tzOffset) % 60);
+
+                isoLocalSpan.textContent = localIsoString;
+            }
+            document.getElementById('ts_results').style.display = 'block';
+        });
+
+        // Hide results on page load
+        document.getElementById('iso_results').style.display = 'none';
+        document.getElementById('ts_results').style.display = 'none';
+    </script>
+</body>
+</html>
