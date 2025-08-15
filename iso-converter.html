@@ -15,19 +15,26 @@
     </nav>
 
     <div class="card">
-        <h1>ISO 8601 Date to Timestamp</h1>
+        <h1>ISO 8601 Date Converter</h1>
 
         <div class="container">
             <label>ISO 8601 Date String: <input type="text" id="iso_string" placeholder="e.g., 2025-08-31T23:59:59+05:30" style="width: 300px;"></label>
         </div>
 
-        <button id="convertIsoBtn">ISO Date to Timestamp</button>
+        <button id="convertIsoBtn">Convert</button>
 
         <div id="iso_results">
             <h2>UTC Timestamps</h2>
             <p>Milliseconds: <span id="iso_ms"></span></p>
             <p>Microseconds: <span id="iso_us"></span></p>
             <p>Nanoseconds: <span id="iso_ns"></span></p>
+        </div>
+
+        <div id="iso_date_results">
+            <h2>Converted Dates</h2>
+            <p>GMT/UTC Time: <span id="iso_date_gmt_time"></span></p>
+            <p>Your Local Time: <span id="iso_date_local_time"></span></p>
+            <p>Relative Time: <span id="iso_date_relative_time"></span></p>
         </div>
     </div>
 
@@ -48,6 +55,36 @@
     </div>
 
     <script>
+        function getRelativeTime(date) {
+            const now = new Date();
+            const diffInSeconds = (date.getTime() - now.getTime()) / 1000;
+            
+            const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+            const units = [
+                { unit: 'year', seconds: 31536000 },
+                { unit: 'month', seconds: 2592000 },
+                { unit: 'week', seconds: 604800 },
+                { unit: 'day', seconds: 86400 },
+                { unit: 'hour', seconds: 3600 },
+                { unit: 'minute', seconds: 60 },
+            ];
+
+            for (const { unit, seconds } of units) {
+                if (Math.abs(diffInSeconds) >= seconds) {
+                    const value = Math.round(diffInSeconds / seconds);
+                    return rtf.format(value, unit);
+                }
+            }
+            
+            const value = Math.round(diffInSeconds);
+            if (Math.abs(value) > 0) {
+                return rtf.format(value, 'second');
+            }
+            
+            return 'just now';
+        }
+
         document.getElementById('convertIsoBtn').addEventListener('click', function() {
             const isoString = document.getElementById('iso_string').value.trim();
             if (!isoString) {
@@ -63,10 +100,19 @@
             const usSpan = document.getElementById('iso_us');
             const nsSpan = document.getElementById('iso_ns');
 
+            const dateResultsDiv = document.getElementById('iso_date_results');
+            const gmtSpan = document.getElementById('iso_date_gmt_time');
+            const localSpan = document.getElementById('iso_date_local_time');
+            const relativeSpan = document.getElementById('iso_date_relative_time');
+
             if (isNaN(dateInMs)) {
                 msSpan.textContent = 'Invalid Date String';
                 usSpan.textContent = 'Invalid Date String';
                 nsSpan.textContent = 'Invalid Date String';
+                
+                gmtSpan.textContent = 'Invalid Date String';
+                localSpan.textContent = 'Invalid Date String';
+                relativeSpan.textContent = '';
             } else {
                 const ms = BigInt(dateInMs);
                 const us = ms * 1000n;
@@ -75,8 +121,13 @@
                 msSpan.textContent = ms.toString();
                 usSpan.textContent = us.toString();
                 nsSpan.textContent = ns.toString();
+
+                gmtSpan.textContent = date.toUTCString();
+                localSpan.textContent = date.toString();
+                relativeSpan.textContent = getRelativeTime(date);
             }
             resultsDiv.style.display = 'block';
+            dateResultsDiv.style.display = 'block';
         });
 
         document.getElementById('convertTsBtn').addEventListener('click', function() {
@@ -140,6 +191,7 @@
         // Hide results on page load
         document.getElementById('iso_results').style.display = 'none';
         document.getElementById('ts_results').style.display = 'none';
+        document.getElementById('iso_date_results').style.display = 'none';
     </script>
 </body>
 </html>
