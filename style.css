@@ -1,19 +1,52 @@
+:root {
+    --bg-color: #f4f4f9;
+    --text-color: #333;
+    --card-bg-color: #fff;
+    --nav-bg-color: #fff;
+    --nav-hover-bg-color: #e9ecef;
+    --input-bg-color: #fff;
+    --input-border-color: #ccc;
+    --results-bg-color: #e9ecef;
+    --primary-color: #007bff;
+    --primary-color-dark: #0056b3;
+    --shadow-color: rgba(0,0,0,0.1);
+    --link-color: #007bff;
+    --ad-placeholder-color: #999;
+}
+
+body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --card-bg-color: #1e1e1e;
+    --nav-bg-color: #1e1e1e;
+    --nav-hover-bg-color: #333;
+    --input-bg-color: #333;
+    --input-border-color: #555;
+    --results-bg-color: #333;
+    --primary-color: #0d6efd;
+    --primary-color-dark: #3d8bfd;
+    --shadow-color: rgba(255,255,255,0.05);
+    --link-color: #3d8bfd;
+    --ad-placeholder-color: #666;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     line-height: 1.6;
     padding: 20px;
     max-width: 800px;
     margin: auto;
-    background-color: #f4f4f9;
-    color: #333;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 nav {
-    background-color: #fff;
+    background-color: var(--nav-bg-color);
     padding: 10px 20px;
     border-radius: 8px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 nav ul {
@@ -22,11 +55,12 @@ nav ul {
     padding: 0;
     display: flex;
     gap: 20px;
+    align-items: center;
 }
 
 nav ul li a {
     text-decoration: none;
-    color: #007bff;
+    color: var(--link-color);
     font-weight: bold;
     padding: 5px 10px;
     border-radius: 5px;
@@ -34,21 +68,21 @@ nav ul li a {
 }
 
 nav ul li a:hover, nav ul li a.active {
-    background-color: #e9ecef;
+    background-color: var(--nav-hover-bg-color);
 }
 
 h1, h2 {
-    border-bottom: 2px solid #007bff;
+    border-bottom: 2px solid var(--primary-color);
     padding-bottom: 10px;
-    color: #0056b3;
+    color: var(--primary-color-dark);
 }
 
 .card {
-    background-color: #fff;
+    background-color: var(--card-bg-color);
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .container {
@@ -68,12 +102,14 @@ h1, h2 {
 input[type="number"], input[type="text"] {
     padding: 8px;
     font-size: 1em;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border-color);
     border-radius: 4px;
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
 }
 
 button {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     padding: 10px 15px;
     cursor: pointer;
@@ -84,7 +120,7 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-color-dark);
 }
 
 .copy-btn {
@@ -104,21 +140,21 @@ button:hover {
 }
 
 .ad-placeholder {
-    border: 2px dashed #ccc;
+    border: 2px dashed var(--input-border-color);
     padding: 20px;
     text-align: center;
     margin: 20px 0;
-    background-color: #fafafa;
-    color: #999;
+    background-color: var(--card-bg-color);
+    color: var(--ad-placeholder-color);
 }
 
 #results p, #ts_results p, #iso_results p, #iso_date_results p, #date_to_iso_results p, #hd_results p, #duration_results p {
-    background-color: #e9ecef;
+    background-color: var(--results-bg-color);
     padding: 10px;
     border-radius: 5px;
     font-family: 'Courier New', Courier, monospace;
     word-wrap: break-word;
-    border-left: 4px solid #007bff;
+    border-left: 4px solid var(--primary-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -128,4 +164,19 @@ button:hover {
     font-weight: bold;
     flex-grow: 1;
     margin-right: 10px;
+}
+
+#theme-toggle {
+    background-color: transparent;
+    border: 1px solid var(--input-border-color);
+    color: var(--text-color);
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+.theme-toggle-container {
+    margin-left: auto;
 }
