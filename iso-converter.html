@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISO 8601 Epoch Converter</title>
+    <meta name="description" content="Convert ISO 8601 date strings to timestamps and human-readable formats. Also convert timestamps and human dates to ISO 8601 format.">
+    <meta name="keywords" content="iso 8601 converter, date converter, timezone, timestamp, utc, local time">
+    <title>ISO 8601 Date Converter | Time Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -26,17 +28,22 @@
 
         <div id="iso_results">
             <h2>UTC Timestamps</h2>
-            <p>Milliseconds: <span id="iso_ms"></span></p>
-            <p>Microseconds: <span id="iso_us"></span></p>
-            <p>Nanoseconds: <span id="iso_ns"></span></p>
+            <p>Milliseconds: <span id="iso_ms"></span><button class="copy-btn" data-target="iso_ms">Copy</button></p>
+            <p>Microseconds: <span id="iso_us"></span><button class="copy-btn" data-target="iso_us">Copy</button></p>
+            <p>Nanoseconds: <span id="iso_ns"></span><button class="copy-btn" data-target="iso_ns">Copy</button></p>
         </div>
 
         <div id="iso_date_results">
             <h2>Converted Dates</h2>
-            <p>GMT/UTC Time: <span id="iso_date_gmt_time"></span></p>
-            <p>Your Local Time: <span id="iso_date_local_time"></span></p>
+            <p>GMT/UTC Time: <span id="iso_date_gmt_time"></span><button class="copy-btn" data-target="iso_date_gmt_time">Copy</button></p>
+            <p>Your Local Time: <span id="iso_date_local_time"></span><button class="copy-btn" data-target="iso_date_local_time">Copy</button></p>
             <p>Relative Time: <span id="iso_date_relative_time"></span></p>
         </div>
+    </div>
+
+    <div class="ad-placeholder">
+        <!-- AdSense Ad Unit -->
+        Advertisement
     </div>
 
     <div class="card">
@@ -62,8 +69,8 @@
 
         <div id="hd_results">
             <h2>ISO 8601 Dates</h2>
-            <p>ISO 8601 (UTC): <span id="hd_iso_utc"></span></p>
-            <p>ISO 8601 (Local): <span id="hd_iso_local"></span></p>
+            <p>ISO 8601 (UTC): <span id="hd_iso_utc"></span><button class="copy-btn" data-target="hd_iso_utc">Copy</button></p>
+            <p>ISO 8601 (Local): <span id="hd_iso_local"></span><button class="copy-btn" data-target="hd_iso_local">Copy</button></p>
         </div>
     </div>
 
@@ -78,8 +85,8 @@
 
         <div id="ts_results">
             <h2>Converted Dates</h2>
-            <p>ISO 8601 (UTC): <span id="iso_utc_time"></span></p>
-            <p>ISO 8601 (Local): <span id="iso_local_time"></span></p>
+            <p>ISO 8601 (UTC): <span id="iso_utc_time"></span><button class="copy-btn" data-target="iso_utc_time">Copy</button></p>
+            <p>ISO 8601 (Local): <span id="iso_local_time"></span><button class="copy-btn" data-target="iso_local_time">Copy</button></p>
         </div>
     </div>
 
@@ -114,12 +121,27 @@
             return 'just now';
         }
 
-        document.getElementById('convertIsoBtn').addEventListener('click', function() {
-            const isoString = document.getElementById('iso_string').value.trim();
-            if (!isoString) {
-                alert('Please enter an ISO 8601 date string.');
-                return;
+        function copyToClipboard(elementId) {
+            const textToCopy = document.getElementById(elementId).textContent;
+            if (navigator.clipboard && textToCopy) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalBtn = document.querySelector(`button[data-target='${elementId}']`);
+                    if (originalBtn) {
+                        const originalText = originalBtn.textContent;
+                        originalBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            originalBtn.textContent = originalText;
+                        }, 1500);
+                    }
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
             }
+        }
+
+        function convertFromIsoString() {
+            const isoString = document.getElementById('iso_string').value.trim();
+            if (!isoString) return;
 
             const date = new Date(isoString);
             const dateInMs = date.getTime();
@@ -157,9 +179,9 @@
             }
             resultsDiv.style.display = 'block';
             dateResultsDiv.style.display = 'block';
-        });
+        }
 
-        document.getElementById('convertHdBtn').addEventListener('click', function() {
+        function convertFromHumanDate() {
             const year = parseInt(document.getElementById('hd_year').value);
             const month = parseInt(document.getElementById('hd_month').value);
             const day = parseInt(document.getElementById('hd_day').value);
@@ -205,14 +227,13 @@
                 isoLocalSpan.textContent = localIsoString;
             }
             hdResultsDiv.style.display = 'block';
-        });
+        }
 
-        document.getElementById('convertTsBtn').addEventListener('click', function() {
+        function convertFromTimestamp() {
             const timestampStr = document.getElementById('timestamp').value.trim();
+            if (!timestampStr) return;
+
             if (!timestampStr.match(/^\d+$/)) {
-                if (timestampStr) {
-                    alert("Please enter a valid timestamp (digits only).");
-                }
                 return;
             }
 
@@ -263,6 +284,22 @@
                 isoLocalSpan.textContent = localIsoString;
             }
             document.getElementById('ts_results').style.display = 'block';
+        }
+
+        // --- Event Listeners ---
+        document.getElementById('convertIsoBtn').addEventListener('click', convertFromIsoString);
+        document.getElementById('iso_string').addEventListener('input', convertFromIsoString);
+
+        document.getElementById('convertHdBtn').addEventListener('click', convertFromHumanDate);
+        document.querySelectorAll('.card:nth-child(3) input').forEach(input => {
+            input.addEventListener('input', convertFromHumanDate);
+        });
+
+        document.getElementById('convertTsBtn').addEventListener('click', convertFromTimestamp);
+        document.getElementById('timestamp').addEventListener('input', convertFromTimestamp);
+
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => copyToClipboard(button.dataset.target));
         });
 
         // Prefill human date inputs with current date/time on page load
@@ -281,6 +318,9 @@
         document.getElementById('ts_results').style.display = 'none';
         document.getElementById('iso_date_results').style.display = 'none';
         document.getElementById('hd_results').style.display = 'none';
+
+        // Trigger initial conversion for prefilled human date
+        convertFromHumanDate();
     </script>
 </body>
 </html>

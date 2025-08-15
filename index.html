@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Epoch Converter</title>
+    <meta name="description" content="Free online tool to convert UTC dates to Epoch timestamps (milliseconds, microseconds, nanoseconds) and vice-versa. Includes ISO 8601 format conversion.">
+    <meta name="keywords" content="epoch converter, timestamp converter, utc date, human date to timestamp, time tools, nanoseconds, microseconds">
+    <title>Epoch & UTC Date Converter | Time Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -38,16 +40,24 @@
 
     <div id="results">
         <h2>UTC Timestamps</h2>
-        <p>Milliseconds: <span id="ms"></span></p>
-        <p>Microseconds: <span id="us"></span></p>
-        <p>Nanoseconds: <span id="ns"></span></p>
+        <p>Milliseconds: <span id="ms"></span><button class="copy-btn" data-target="ms">Copy</button></p>
+        <p>Microseconds: <span id="us"></span><button class="copy-btn" data-target="us">Copy</button></p>
+        <p>Nanoseconds: <span id="ns"></span><button class="copy-btn" data-target="ns">Copy</button></p>
     </div>
 
     <div id="date_to_iso_results">
         <h2>ISO 8601 Dates</h2>
-        <p>ISO 8601 (UTC): <span id="date_to_iso_utc"></span></p>
-        <p>ISO 8601 (Local): <span id="date_to_iso_local"></span></p>
+        <p>ISO 8601 (UTC): <span id="date_to_iso_utc"></span><button class="copy-btn" data-target="date_to_iso_utc">Copy</button></p>
+        <p>ISO 8601 (Local): <span id="date_to_iso_local"></span><button class="copy-btn" data-target="date_to_iso_local">Copy</button></p>
     </div>
+</div>
+
+<div class="ad-placeholder">
+    <!-- 
+      Your Google AdSense ad unit code can be placed here.
+      Sign up for AdSense, create an ad unit, and paste the provided code snippet.
+    -->
+    Advertisement
 </div>
 
 <div class="card">
@@ -61,8 +71,8 @@
 
     <div id="ts_results">
         <h2>Converted Dates</h2>
-        <p>GMT/UTC Time: <span id="gmt_time"></span></p>
-        <p>Your Local Time: <span id="local_time"></span></p>
+        <p>GMT/UTC Time: <span id="gmt_time"></span><button class="copy-btn" data-target="gmt_time">Copy</button></p>
+        <p>Your Local Time: <span id="local_time"></span><button class="copy-btn" data-target="local_time">Copy</button></p>
         <p>Relative Time: <span id="relative_time"></span></p>
     </div>
 </div>
@@ -98,7 +108,26 @@
             return 'just now';
         }
 
-        document.getElementById('convertBtn').addEventListener('click', function() {
+        function copyToClipboard(elementId) {
+            const textToCopy = document.getElementById(elementId).textContent;
+            if (navigator.clipboard && textToCopy) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    // Optional: show a temporary "Copied!" message
+                    const originalBtn = document.querySelector(`button[data-target='${elementId}']`);
+                    if (originalBtn) {
+                        const originalText = originalBtn.textContent;
+                        originalBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            originalBtn.textContent = originalText;
+                        }, 1500);
+                    }
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+            }
+        }
+        
+        function convertHumanDate() {
             const year = parseInt(document.getElementById('year').value);
             const month = parseInt(document.getElementById('month').value);
             const day = parseInt(document.getElementById('day').value);
@@ -164,22 +193,13 @@
 
             isoLocalSpan.textContent = localIsoString;
             dateToIsoResultsDiv.style.display = 'block';
-        });
+        }
 
-        // Hide results on page load
-        document.getElementById('results').style.display = 'none';
-        document.getElementById('date_to_iso_results').style.display = 'none';
-
-        // --- Timestamp to Human Date ---
-        const tsResultsDiv = document.getElementById('ts_results');
-        tsResultsDiv.style.display = 'none'; // Hide on load
-
-        document.getElementById('convertTsBtn').addEventListener('click', function() {
+        function convertTimestamp() {
             const timestampStr = document.getElementById('timestamp').value.trim();
+            if (!timestampStr) return;
+
             if (!timestampStr.match(/^\d+$/)) {
-                if (timestampStr) {
-                    alert("Please enter a valid timestamp (digits only).");
-                }
                 return;
             }
 
@@ -187,7 +207,6 @@
             try {
                 timestamp = BigInt(timestampStr);
             } catch (e) {
-                alert("Invalid timestamp value. It might be too large.");
                 return;
             }
 
@@ -219,6 +238,26 @@
                 relativeSpan.textContent = getRelativeTime(date);
             }
             tsResultsDiv.style.display = 'block';
+        }
+
+        document.getElementById('convertBtn').addEventListener('click', convertHumanDate);
+        document.querySelectorAll('.card:first-child input').forEach(input => {
+            input.addEventListener('input', convertHumanDate);
+        });
+
+        // Hide results on page load
+        document.getElementById('results').style.display = 'none';
+        document.getElementById('date_to_iso_results').style.display = 'none';
+
+        // --- Timestamp to Human Date ---
+        const tsResultsDiv = document.getElementById('ts_results');
+        tsResultsDiv.style.display = 'none'; // Hide on load
+
+        document.getElementById('convertTsBtn').addEventListener('click', convertTimestamp);
+        document.getElementById('timestamp').addEventListener('input', convertTimestamp);
+
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => copyToClipboard(button.dataset.target));
         });
 
         // Prefill date/time inputs with current date/time on page load
@@ -230,6 +269,9 @@
             document.getElementById('hour').value = now.getHours();
             document.getElementById('minute').value = now.getMinutes();
             document.getElementById('second').value = now.getSeconds();
+
+            // Trigger initial conversion for prefilled values
+            convertHumanDate();
         })();
     </script>
 </body>

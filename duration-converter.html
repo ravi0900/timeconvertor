@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duration Converter</title>
+    <meta name="description" content="A simple tool to convert a duration in days to the equivalent hours, minutes, and seconds.">
+    <meta name="keywords" content="duration converter, days to hours, days to minutes, days to seconds, time calculation">
+    <title>Duration Converter (Days to H/M/S) | Time Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -26,14 +28,37 @@
 
         <div id="duration_results">
             <h2>Calculated Duration</h2>
-            <p>Hours: <span id="duration_hours"></span></p>
-            <p>Minutes: <span id="duration_minutes"></span></p>
-            <p>Seconds: <span id="duration_seconds"></span></p>
+            <p>Hours: <span id="duration_hours"></span><button class="copy-btn" data-target="duration_hours">Copy</button></p>
+            <p>Minutes: <span id="duration_minutes"></span><button class="copy-btn" data-target="duration_minutes">Copy</button></p>
+            <p>Seconds: <span id="duration_seconds"></span><button class="copy-btn" data-target="duration_seconds">Copy</button></p>
         </div>
     </div>
 
+    <div class="ad-placeholder">
+        <!-- AdSense Ad Unit -->
+        Advertisement
+    </div>
+
     <script>
-        document.getElementById('convertDurationBtn').addEventListener('click', function() {
+        function copyToClipboard(elementId) {
+            const textToCopy = document.getElementById(elementId).textContent;
+            if (navigator.clipboard && textToCopy) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalBtn = document.querySelector(`button[data-target='${elementId}']`);
+                    if (originalBtn) {
+                        const originalText = originalBtn.textContent;
+                        originalBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            originalBtn.textContent = originalText;
+                        }, 1500);
+                    }
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+            }
+        }
+
+        function convertDuration() {
             const daysInput = document.getElementById('days_input').value;
             const days = parseFloat(daysInput);
 
@@ -56,6 +81,13 @@
                 secondsSpan.textContent = seconds.toLocaleString();
             }
             resultsDiv.style.display = 'block';
+        }
+
+        document.getElementById('convertDurationBtn').addEventListener('click', convertDuration);
+        document.getElementById('days_input').addEventListener('input', convertDuration);
+
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => copyToClipboard(button.dataset.target));
         });
 
         // Hide results on page load
