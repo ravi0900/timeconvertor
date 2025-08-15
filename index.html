@@ -18,12 +18,12 @@
         <h1>Human date to Timestamp</h1>
 
     <div class="container">
-        <label>Year: <input type="number" id="year" value="2025" required></label>
-        <label>Month: <input type="number" id="month" value="8" min="1" max="12" required></label>
-        <label>Day: <input type="number" id="day" value="7" min="1" max="31" required></label>
-        <label>Hour: <input type="number" id="hour" value="0" min="0" max="23" required></label>
-        <label>Minute: <input type="number" id="minute" value="0" min="0" max="59" required></label>
-        <label>Second: <input type="number" id="second" value="0" min="0" max="59" required></label>
+        <label>Year: <input type="number" id="year" required></label>
+        <label>Month: <input type="number" id="month" min="1" max="12" required></label>
+        <label>Day: <input type="number" id="day" min="1" max="31" required></label>
+        <label>Hour: <input type="number" id="hour" min="0" max="23" required></label>
+        <label>Minute: <input type="number" id="minute" min="0" max="59" required></label>
+        <label>Second: <input type="number" id="second" min="0" max="59" required></label>
     </div>
 
     <div style="margin-bottom: 20px;">
@@ -185,6 +185,17 @@
             }
             tsResultsDiv.style.display = 'block';
         });
+
+        // Prefill date/time inputs with current date/time on page load
+        (function() {
+            const now = new Date();
+            document.getElementById('year').value = now.getFullYear();
+            document.getElementById('month').value = now.getMonth() + 1; // Month is 0-indexed
+            document.getElementById('day').value = now.getDate();
+            document.getElementById('hour').value = now.getHours();
+            document.getElementById('minute').value = now.getMinutes();
+            document.getElementById('second').value = now.getSeconds();
+        })();
     </script>
 </body>
 </html>
