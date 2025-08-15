@@ -41,6 +41,12 @@
         <p>Microseconds: <span id="us"></span></p>
         <p>Nanoseconds: <span id="ns"></span></p>
     </div>
+
+    <div id="date_to_iso_results">
+        <h2>ISO 8601 Dates</h2>
+        <p>ISO 8601 (UTC): <span id="date_to_iso_utc"></span></p>
+        <p>ISO 8601 (Local): <span id="date_to_iso_local"></span></p>
+    </div>
 </div>
 
 <div class="card">
@@ -114,11 +120,18 @@
             const usSpan = document.getElementById('us');
             const nsSpan = document.getElementById('ns');
 
+            const dateToIsoResultsDiv = document.getElementById('date_to_iso_results');
+            const isoUtcSpan = document.getElementById('date_to_iso_utc');
+            const isoLocalSpan = document.getElementById('date_to_iso_local');
+
             if (isNaN(dateInMs)) {
                 msSpan.textContent = 'Invalid Date';
                 usSpan.textContent = 'Invalid Date';
                 nsSpan.textContent = 'Invalid Date';
+                isoUtcSpan.textContent = 'Invalid Date';
+                isoLocalSpan.textContent = 'Invalid Date';
                 resultsDiv.style.display = 'block';
+                dateToIsoResultsDiv.style.display = 'block';
                 return;
             }
 
@@ -130,10 +143,31 @@
             usSpan.textContent = us.toString();
             nsSpan.textContent = ns.toString();
             resultsDiv.style.display = 'block';
+
+            const date = new Date(dateInMs);
+            isoUtcSpan.textContent = date.toISOString();
+
+            // For local ISO string, we need to build it manually to include timezone offset
+            const tzOffset = -date.getTimezoneOffset();
+            const diff = tzOffset >= 0 ? '+' : '-';
+            const pad = (num) => (num < 10 ? '0' : '') + num;
+            
+            const localIsoString = date.getFullYear() +
+                '-' + pad(date.getMonth() + 1) +
+                '-' + pad(date.getDate()) +
+                'T' + pad(date.getHours()) +
+                ':' + pad(date.getMinutes()) +
+                ':' + pad(date.getSeconds()) +
+                diff + pad(Math.floor(Math.abs(tzOffset) / 60)) +
+                ':' + pad(Math.abs(tzOffset) % 60);
+
+            isoLocalSpan.textContent = localIsoString;
+            dateToIsoResultsDiv.style.display = 'block';
         });
 
         // Hide results on page load
         document.getElementById('results').style.display = 'none';
+        document.getElementById('date_to_iso_results').style.display = 'none';
 
         // --- Timestamp to Human Date ---
         const tsResultsDiv = document.getElementById('ts_results');
