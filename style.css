@@ -34,8 +34,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     line-height: 1.6;
     padding: 20px;
-    max-width: 800px;
-    margin: auto;
+    margin: 0;
     background-color: var(--bg-color);
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
@@ -179,4 +178,36 @@ button:hover {
 
 .theme-toggle-container {
     margin-left: auto;
+}
+
+.page-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.content-wrapper {
+    max-width: 800px;
+    width: 100%;
+}
+
+.side-ad {
+    width: 160px;
+    flex-shrink: 0;
+    border: 2px dashed var(--input-border-color);
+    padding: 20px;
+    text-align: center;
+    background-color: var(--card-bg-color);
+    color: var(--ad-placeholder-color);
+    height: fit-content;
+}
+
+body.ads-off .side-ad {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    .side-ad {
+        display: none;
+    }
 }
