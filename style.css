@@ -202,7 +202,8 @@ button:hover {
     height: fit-content;
 }
 
-body.ads-off .side-ad {
+body.ads-off .side-ad,
+body.ads-off .ad-placeholder {
     display: none;
 }
 
