@@ -67,14 +67,34 @@
             </div>
 
             <div class="card">
-                <h2>How Our Converters Work</h2>
-                <p>Our tools use browser-based JavaScript to perform conversions instantly without sending any data to a server.</p>
+                <h2>How the Conversions Work</h2>
                 
-                <h3>Human Date to Timestamp / ISO 8601</h3>
-                <p>When you input a date (year, month, day, etc.), we create a JavaScript <code>Date</code> object. Based on whether you select "GMT/UTC" or "Local Time", we use either <code>Date.UTC()</code> or the standard <code>new Date()</code> constructor. From this object, we can easily extract the Epoch timestamp in milliseconds. This value is then used to calculate the equivalent in microseconds and nanoseconds. The <code>toISOString()</code> method is used to get the ISO 8601 string in UTC.</p>
+                <h3>From Human Date to Epoch Timestamp</h3>
+                <p>To convert a human-readable date to an Epoch timestamp, the total number of seconds between the Unix epoch (January 1, 1970, at 00:00:00 UTC) and the specified date is calculated. This calculation accounts for:</p>
+                <ul>
+                    <li>The number of days in each year, including leap years.</li>
+                    <li>The number of days in each month.</li>
+                    <li>The hours, minutes, and seconds of the specified time.</li>
+                </ul>
+                <p>The result is a total number of seconds. This value is then multiplied to get higher precision units:</p>
+                <ul>
+                    <li><strong>Milliseconds:</strong> Total Seconds × 1,000</li>
+                    <li><strong>Microseconds:</strong> Total Seconds × 1,000,000</li>
+                    <li><strong>Nanoseconds:</strong> Total Seconds × 1,000,000,000</li>
+                </ul>
 
-                <h3>Timestamp / ISO 8601 to Human Date</h3>
-                <p>When you provide a timestamp or an ISO 8601 string, we first convert it to an Epoch timestamp in milliseconds. This value is then used to construct a new JavaScript <code>Date</code> object. Once we have this object, we can format it into various human-readable strings, such as the UTC/GMT string or your local time string, which includes your browser's timezone offset.</p>
+                <h3>From Epoch Timestamp to Human Date</h3>
+                <p>Converting an Epoch timestamp back to a human-readable date is the reverse process. The timestamp is first scaled down to seconds (e.g., a millisecond timestamp is divided by 1,000).</p>
+                <p>This total number of seconds is then used to determine the date and time by progressively calculating:</p>
+                <ol>
+                    <li>How many full years have passed since the epoch.</li>
+                    <li>How many months and days are left in the current year.</li>
+                    <li>How many hours, minutes, and seconds are left in the current day.</li>
+                </ol>
+                <p>This process correctly accounts for leap years to determine the exact calendar date and time in UTC.</p>
+
+                <h3>Handling ISO 8601 and Timezones</h3>
+                <p>The ISO 8601 format is a standardized way to represent a date and time. When you provide an ISO string like <code>2025-08-18T12:00:00+05:30</code>, it is first converted into a UTC-equivalent date. The timezone offset (<code>+05:30</code>) is subtracted from the given time to find the corresponding time in UTC. Once in UTC, it can be converted to an Epoch timestamp as described above.</p>
             </div>
         </div>
         <div class="side-ad right-ad">
