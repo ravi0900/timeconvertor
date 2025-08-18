@@ -21,6 +21,8 @@ function injectAdUnit(container) {
 
 document.addEventListener('DOMContentLoaded', () => {
     if (ADS_ENABLED) {
+        document.body.classList.add('ads-active');
+
         // Load the main AdSense script. It only needs to be on the page once.
         const adScript = document.createElement('script');
         adScript.async = true;
@@ -31,8 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Find all ad containers and inject an ad unit into each one.
         const adContainers = document.querySelectorAll('.ad-container');
         adContainers.forEach(injectAdUnit);
-    } else {
-        // If ads are disabled, add a class to the body to hide ad containers via CSS.
-        document.body.classList.add('ads-off');
     }
+    // If ADS_ENABLED is false, or if this script doesn't load,
+    // the .ads-active class is not added, so ad containers remain hidden by default CSS.
 });

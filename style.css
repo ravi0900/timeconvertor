@@ -202,13 +202,17 @@ button:hover {
     height: fit-content;
 }
 
-body.ads-off .side-ad,
-body.ads-off .ad-placeholder {
-    display: none;
+.ad-container {
+    display: none; /* Hide ad containers by default */
+}
+
+body.ads-active .ad-placeholder.ad-container,
+body.ads-active .side-ad.ad-container {
+    display: block; /* Show ad containers when ads are active */
 }
 
 @media (max-width: 1200px) {
-    .side-ad {
-        display: none;
+    body.ads-active .side-ad.ad-container {
+        display: none; /* Still hide side ads on smaller screens */
     }
 }
