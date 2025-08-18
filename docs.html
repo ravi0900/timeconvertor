@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A detailed explanation of Epoch (Unix) timestamps and the ISO 8601 date format. Learn how our tools convert between these formats for developers and data analysts.">
+    <meta name="keywords" content="epoch time, unix time, iso 8601, what is epoch, what is iso 8601, timestamp documentation, date format guide">
+    <title>Understanding Epoch Time & ISO 8601 | Time Tools Docs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="side-ad left-ad">
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1959532382727156"
+                 crossorigin="anonymous"></script>
+            <!-- time converter -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1959532382727156"
+                 data-ad-slot="9444730198"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+        <div class="content-wrapper">
+            <nav>
+                <ul>
+                    <li><a href="index.html">UTC Date Converter</a></li>
+                    <li><a href="iso-converter.html">ISO 8601 Converter</a></li>
+                    <li><a href="duration-converter.html">Duration Converter</a></li>
+                    <li><a href="docs.html" class="active">Docs</a></li>
+                    <li class="theme-toggle-container"><button id="theme-toggle">🌓</button></li>
+                </ul>
+            </nav>
+
+            <div class="card">
+                <h1>Documentation: Epoch Time & ISO 8601</h1>
+                <p>This page provides a brief explanation of the time formats used in our converters and how the conversion process works.</p>
+            </div>
+
+            <div class="card">
+                <h2>What is Epoch Time?</h2>
+                <p><strong>Epoch time</strong>, also known as Unix time or POSIX time, is a system for describing a point in time. It is the number of seconds that have elapsed since the <em>Unix epoch</em>, which was at 00:00:00 UTC on 1 January 1970.</p>
+                <p>Because computer systems often require higher precision, Epoch time is frequently represented in smaller units:</p>
+                <ul>
+                    <li><strong>Seconds:</strong> The standard unit (e.g., <code>1723948799</code>).</li>
+                    <li><strong>Milliseconds (ms):</strong> Seconds multiplied by 1,000. This is commonly used in web technologies like JavaScript.</li>
+                    <li><strong>Microseconds (µs):</strong> Seconds multiplied by 1,000,000.</li>
+                    <li><strong>Nanoseconds (ns):</strong> Seconds multiplied by 1,000,000,000. Used in high-precision systems.</li>
+                </ul>
+                <p>Epoch time is useful because it is a simple, unambiguous number that is independent of time zones, making it ideal for computer systems to store and manipulate timestamps.</p>
+            </div>
+
+            <div class="card">
+                <h2>What is ISO 8601?</h2>
+                <p><strong>ISO 8601</strong> is an international standard for representing dates and times. Its goal is to provide a well-defined, unambiguous method of representing date and time information to avoid misinterpretation, especially when data is transferred between countries with different conventions.</p>
+                <p>A common ISO 8601 format looks like this: <code>YYYY-MM-DDTHH:mm:ss.sssZ</code></p>
+                <ul>
+                    <li><code>YYYY-MM-DD</code>: The date (year, month, day).</li>
+                    <li><code>T</code>: A separator indicating that the time part follows.</li>
+                    <li><code>HH:mm:ss.sss</code>: The time (hours, minutes, seconds, and milliseconds).</li>
+                    <li><code>Z</code>: The time zone designator. 'Z' stands for Zulu time, which is equivalent to UTC. It can also be a positive or negative offset, like <code>+05:30</code> or <code>-07:00</code>.</li>
+                </ul>
+                <p>This format is widely used in modern APIs and databases because it is machine-readable and contains complete information about the date, time, and timezone in a single string.</p>
+            </div>
+
+            <div class="card">
+                <h2>How Our Converters Work</h2>
+                <p>Our tools use browser-based JavaScript to perform conversions instantly without sending any data to a server.</p>
+                
+                <h3>Human Date to Timestamp / ISO 8601</h3>
+                <p>When you input a date (year, month, day, etc.), we create a JavaScript <code>Date</code> object. Based on whether you select "GMT/UTC" or "Local Time", we use either <code>Date.UTC()</code> or the standard <code>new Date()</code> constructor. From this object, we can easily extract the Epoch timestamp in milliseconds. This value is then used to calculate the equivalent in microseconds and nanoseconds. The <code>toISOString()</code> method is used to get the ISO 8601 string in UTC.</p>
+
+                <h3>Timestamp / ISO 8601 to Human Date</h3>
+                <p>When you provide a timestamp or an ISO 8601 string, we first convert it to an Epoch timestamp in milliseconds. This value is then used to construct a new JavaScript <code>Date</code> object. Once we have this object, we can format it into various human-readable strings, such as the UTC/GMT string or your local time string, which includes your browser's timezone offset.</p>
+            </div>
+        </div>
+        <div class="side-ad right-ad">
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1959532382727156"
+                 crossorigin="anonymous"></script>
+            <!-- time converter -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-1959532382727156"
+                 data-ad-slot="9444730198"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </div>
+    <script>
+        // --- Theme Toggle ---
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                const isDarkMode = body.classList.contains('dark-mode');
+                localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+                themeToggle.textContent = isDarkMode ? '☀️' : '🌒';
+            });
+
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('dark-mode');
+                themeToggle.textContent = '🌒';
+            }
+        })();
+    </script>
+</body>
+</html>
