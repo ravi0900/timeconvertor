@@ -70,31 +70,53 @@
                 <h2>How the Conversions Work</h2>
                 
                 <h3>From Human Date to Epoch Timestamp</h3>
-                <p>To convert a human-readable date to an Epoch timestamp, the total number of seconds between the Unix epoch (January 1, 1970, at 00:00:00 UTC) and the specified date is calculated. This calculation accounts for:</p>
+                <p>This conversion calculates the total number of seconds elapsed from the Unix epoch (00:00:00 UTC on Jan 1, 1970) to the target date. The logic is to sum up the seconds for every day, hour, minute, and second that has passed, while correctly accounting for leap years.</p>
+                <p><strong>Example:</strong> Convert the UTC date <code>2025-08-18 10:30:00</code>.</p>
+                <p>The total time elapsed is broken down:</p>
                 <ul>
-                    <li>The number of days in each year, including leap years.</li>
-                    <li>The number of days in each month.</li>
-                    <li>The hours, minutes, and seconds of the specified time.</li>
+                    <li>Seconds from Jan 1, 1970 to Dec 31, 2024 (55 years, including 14 leap years).</li>
+                    <li>Seconds from Jan 1, 2025 to Aug 17, 2025 (229 days).</li>
+                    <li>Seconds for the time on Aug 18, 2025 (10 hours, 30 minutes).</li>
                 </ul>
-                <p>The result is a total number of seconds. This value is then multiplied to get higher precision units:</p>
+                <p>Summing these up gives the final epoch timestamp in seconds: <code>1755586600</code>.</p>
+                <p>From this, we can derive higher precision values:</p>
                 <ul>
-                    <li><strong>Milliseconds:</strong> Total Seconds × 1,000</li>
-                    <li><strong>Microseconds:</strong> Total Seconds × 1,000,000</li>
-                    <li><strong>Nanoseconds:</strong> Total Seconds × 1,000,000,000</li>
+                    <li><strong>Milliseconds:</strong> <code>1755586600000</code> (seconds × 1,000)</li>
+                    <li><strong>Microseconds:</strong> <code>1755586600000000</code> (seconds × 1,000,000)</li>
+                    <li><strong>Nanoseconds:</strong> <code>1755586600000000000</code> (seconds × 1,000,000,000)</li>
                 </ul>
 
                 <h3>From Epoch Timestamp to Human Date</h3>
-                <p>Converting an Epoch timestamp back to a human-readable date is the reverse process. The timestamp is first scaled down to seconds (e.g., a millisecond timestamp is divided by 1,000).</p>
-                <p>This total number of seconds is then used to determine the date and time by progressively calculating:</p>
+                <p>This is the reverse process. The total seconds are divided by the number of seconds in a day (86,400) to find the number of full days that have passed and the remaining seconds for the time of day.</p>
+                <p><strong>Example:</strong> Convert the timestamp <code>1755586600</code> (in seconds).</p>
                 <ol>
-                    <li>How many full years have passed since the epoch.</li>
-                    <li>How many months and days are left in the current year.</li>
-                    <li>How many hours, minutes, and seconds are left in the current day.</li>
+                    <li><strong>Calculate days and remaining seconds:</strong>
+                        <ul>
+                            <li><code>1755586600 ÷ 86400</code> = 20319.289... This means 20,319 full days have passed.</li>
+                            <li><code>1755586600 % 86400</code> = 37,800 remaining seconds for the time of day.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Determine the date:</strong> Starting from Jan 1, 1970, adding 20,319 days (accounting for leap years) brings us to the date <code>August 18, 2025</code>.</li>
+                    <li><strong>Determine the time from remaining seconds:</strong>
+                        <ul>
+                            <li>Hours: <code>37800 ÷ 3600</code> = 10.5, so <strong>10</strong> hours.</li>
+                            <li>Minutes: The remaining 0.5 hours is <code>0.5 × 60</code> = <strong>30</strong> minutes.</li>
+                            <li>Seconds: <strong>0</strong> seconds.</li>
+                        </ul>
+                    </li>
                 </ol>
-                <p>This process correctly accounts for leap years to determine the exact calendar date and time in UTC.</p>
-
+                <p>The resulting UTC date is <code>Mon, 18 Aug 2025 10:30:00 GMT</code>.</p>
+                
                 <h3>Handling ISO 8601 and Timezones</h3>
-                <p>The ISO 8601 format is a standardized way to represent a date and time. When you provide an ISO string like <code>2025-08-18T12:00:00+05:30</code>, it is first converted into a UTC-equivalent date. The timezone offset (<code>+05:30</code>) is subtracted from the given time to find the corresponding time in UTC. Once in UTC, it can be converted to an Epoch timestamp as described above.</p>
+                <p>The ISO 8601 format includes timezone information, which must be handled to get an accurate UTC time before converting to an Epoch timestamp.</p>
+                <p><strong>Example:</strong> Convert the ISO string <code>2025-08-18T16:00:00+05:30</code>.</p>
+                <ol>
+                    <li><strong>Identify the components:</strong> The date is <code>2025-08-18</code>, the time is <code>16:00:00</code>, and the timezone is <code>+05:30</code> (5 hours and 30 minutes ahead of UTC).</li>
+                    <li><strong>Normalize to UTC:</strong> To find the equivalent UTC time, we subtract the timezone offset from the given time.</li>
+                    <li><strong>Calculation:</strong> 16:00:00 - 05:30 = 10:30:00. The date remains the same.</li>
+                    <li><strong>Resulting UTC Time:</strong> The equivalent time in UTC is <code>2025-08-18 10:30:00 UTC</code>.</li>
+                </ol>
+                <p>Once the date is in UTC, it can be converted to an Epoch timestamp as explained in the first section, resulting in <code>1755586600</code> seconds.</p>
             </div>
         </div>
         <div class="side-ad right-ad">
