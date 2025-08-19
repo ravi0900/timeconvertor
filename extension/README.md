@@ -4,13 +4,7 @@ This directory contains the files for the Time Tools Converter Chrome extension.
 
 ## Icon Setup
 
-The Chrome extension requires PNG icons in multiple sizes. An SVG icon has been provided in `extension/icons/icon.svg`. You must convert this SVG to the following PNG files:
-
-- `extension/icons/icon16.png` (16x16 pixels)
-- `extension/icons/icon48.png` (48x48 pixels)
-- `extension/icons/icon128.png` (128x128 pixels)
-
-You can use an online SVG to PNG converter tool to generate these files.
+The Chrome extension uses `extension/icons/icon.svg` for all required icon sizes. No manual conversion is needed.
 
 ## How to Load the Extension in Chrome
 
