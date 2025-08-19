@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Time Tools Converter",
+  "version": "1.0",
+  "description": "A handy tool to convert between Epoch timestamps, UTC dates, ISO 8601 strings, and durations.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

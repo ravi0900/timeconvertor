@@ -1,0 +1,111 @@
+:root {
+    --bg-color: #1e1e1e;
+    --text-color: #e0e0e0;
+    --card-bg-color: #2a2a2a;
+    --input-bg-color: #333;
+    --input-border-color: #555;
+    --results-bg-color: #333;
+    --primary-color: #0d6efd;
+    --primary-color-dark: #3d8bfd;
+    --shadow-color: rgba(255,255,255,0.05);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    width: 550px;
+    padding: 15px;
+    margin: 0;
+}
+
+h1, h2 {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 8px;
+    margin-top: 0;
+    font-size: 1.2em;
+    color: var(--primary-color-dark);
+}
+
+h2 {
+    font-size: 1em;
+    margin-top: 15px;
+    border-bottom: 1px solid var(--input-border-color);
+}
+
+.card {
+    background-color: var(--card-bg-color);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.container label {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 100px;
+    font-size: 0.9em;
+}
+
+input[type="number"], input[type="text"] {
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.radio-group {
+    margin-bottom: 15px;
+}
+.radio-group label {
+    margin-right: 15px;
+}
+
+.copy-btn {
+    background-color: #6c757d;
+    color: white;
+    padding: 2px 8px;
+    font-size: 0.8em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.copy-btn:hover {
+    background-color: #5a6268;
+}
+
+p {
+    background-color: var(--results-bg-color);
+    padding: 8px;
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    word-wrap: break-word;
+    border-left: 4px solid var(--primary-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
+}
+
+span {
+    font-weight: bold;
+    flex-grow: 1;
+    margin-right: 10px;
+}
