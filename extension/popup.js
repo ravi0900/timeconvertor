@@ -1,3 +1,16 @@
+function updateAndHighlight(elementId, text) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = text;
+        const parentP = element.closest('p');
+        if (parentP) {
+            parentP.classList.remove('highlight-animation');
+            void parentP.offsetWidth;
+            parentP.classList.add('highlight-animation');
+        }
+    }
+}
+
 function getRelativeTime(date) {
     const now = new Date();
     const diffInSeconds = (date.getTime() - now.getTime()) / 1000;
@@ -55,13 +68,13 @@ function convertHumanDate() {
     const dateInMs = isLocal ? new Date(year, month - 1, day, hour, minute, second).getTime() : Date.UTC(year, month - 1, day, hour, minute, second);
 
     const isValid = !isNaN(dateInMs);
-    document.getElementById('ms').textContent = isValid ? BigInt(dateInMs).toString() : 'Invalid Date';
-    document.getElementById('us').textContent = isValid ? (BigInt(dateInMs) * 1000n).toString() : 'Invalid Date';
-    document.getElementById('ns').textContent = isValid ? (BigInt(dateInMs) * 1000000n).toString() : 'Invalid Date';
+    updateAndHighlight('ms', isValid ? BigInt(dateInMs).toString() : 'Invalid Date');
+    updateAndHighlight('us', isValid ? (BigInt(dateInMs) * 1000n).toString() : 'Invalid Date');
+    updateAndHighlight('ns', isValid ? (BigInt(dateInMs) * 1000000n).toString() : 'Invalid Date');
 
     const date = new Date(dateInMs);
-    document.getElementById('hd_iso_utc').textContent = isValid ? date.toISOString() : 'Invalid Date';
-    document.getElementById('hd_iso_local').textContent = isValid ? getLocalIsoString(date) : 'Invalid Date';
+    updateAndHighlight('hd_iso_utc', isValid ? date.toISOString() : 'Invalid Date');
+    updateAndHighlight('hd_iso_local', isValid ? getLocalIsoString(date) : 'Invalid Date');
 }
 
 function convertTimestamp() {
@@ -77,11 +90,11 @@ function convertTimestamp() {
 
     const date = new Date(dateInMs);
     const isValid = !isNaN(date.getTime());
-    document.getElementById('gmt_time').textContent = isValid ? date.toUTCString() : 'Invalid Timestamp';
-    document.getElementById('local_time').textContent = isValid ? date.toString() : 'Invalid Timestamp';
-    document.getElementById('relative_time').textContent = isValid ? getRelativeTime(date) : '';
-    document.getElementById('ts_iso_utc').textContent = isValid ? date.toISOString() : 'Invalid Timestamp';
-    document.getElementById('ts_iso_local').textContent = isValid ? getLocalIsoString(date) : 'Invalid Timestamp';
+    updateAndHighlight('gmt_time', isValid ? date.toUTCString() : 'Invalid Timestamp');
+    updateAndHighlight('local_time', isValid ? date.toString() : 'Invalid Timestamp');
+    updateAndHighlight('relative_time', isValid ? getRelativeTime(date) : '');
+    updateAndHighlight('ts_iso_utc', isValid ? date.toISOString() : 'Invalid Timestamp');
+    updateAndHighlight('ts_iso_local', isValid ? getLocalIsoString(date) : 'Invalid Timestamp');
 }
 
 function convertFromIsoString() {
@@ -92,20 +105,20 @@ function convertFromIsoString() {
     const dateInMs = date.getTime();
     const isValid = !isNaN(dateInMs);
 
-    document.getElementById('iso_ms').textContent = isValid ? BigInt(dateInMs).toString() : 'Invalid Date String';
-    document.getElementById('iso_us').textContent = isValid ? (BigInt(dateInMs) * 1000n).toString() : 'Invalid Date String';
-    document.getElementById('iso_ns').textContent = isValid ? (BigInt(dateInMs) * 1000000n).toString() : 'Invalid Date String';
-    document.getElementById('iso_gmt_time').textContent = isValid ? date.toUTCString() : 'Invalid Date String';
-    document.getElementById('iso_local_time').textContent = isValid ? date.toString() : 'Invalid Date String';
-    document.getElementById('iso_relative_time').textContent = isValid ? getRelativeTime(date) : '';
+    updateAndHighlight('iso_ms', isValid ? BigInt(dateInMs).toString() : 'Invalid Date String');
+    updateAndHighlight('iso_us', isValid ? (BigInt(dateInMs) * 1000n).toString() : 'Invalid Date String');
+    updateAndHighlight('iso_ns', isValid ? (BigInt(dateInMs) * 1000000n).toString() : 'Invalid Date String');
+    updateAndHighlight('iso_gmt_time', isValid ? date.toUTCString() : 'Invalid Date String');
+    updateAndHighlight('iso_local_time', isValid ? date.toString() : 'Invalid Date String');
+    updateAndHighlight('iso_relative_time', isValid ? getRelativeTime(date) : '');
 }
 
 function convertDuration() {
     const days = parseFloat(document.getElementById('days_input').value);
     const isValid = !isNaN(days) && days >= 0;
-    document.getElementById('duration_hours').textContent = isValid ? (days * 24).toLocaleString() : 'Invalid input';
-    document.getElementById('duration_minutes').textContent = isValid ? (days * 24 * 60).toLocaleString() : 'Invalid input';
-    document.getElementById('duration_seconds').textContent = isValid ? (days * 24 * 60 * 60).toLocaleString() : 'Invalid input';
+    updateAndHighlight('duration_hours', isValid ? (days * 24).toLocaleString() : 'Invalid input');
+    updateAndHighlight('duration_minutes', isValid ? (days * 24 * 60).toLocaleString() : 'Invalid input');
+    updateAndHighlight('duration_seconds', isValid ? (days * 24 * 60 * 60).toLocaleString() : 'Invalid input');
 }
 
 document.addEventListener('DOMContentLoaded', () => {

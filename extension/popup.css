@@ -109,3 +109,11 @@ span {
     flex-grow: 1;
     margin-right: 10px;
 }
+
+@keyframes highlight {
+    from { background-color: var(--primary-color-dark); }
+    to { background-color: var(--results-bg-color); }
+}
+p.highlight-animation {
+    animation: highlight 0.7s ease-out;
+}

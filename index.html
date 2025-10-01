@@ -8,6 +8,15 @@
     <title>Epoch Timestamp &amp; UTC Date Converter | Time Tools</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
+    <style>
+        @keyframes highlight {
+            from { background-color: var(--primary-color-dark, #3d8bfd); }
+            to { background-color: var(--results-bg-color, #333); }
+        }
+        p.highlight-animation {
+            animation: highlight 0.7s ease-out;
+        }
+    </style>
 </head>
 <body>
     <div class="page-wrapper">
@@ -37,9 +46,9 @@
     </div>
 
     <div style="margin-bottom: 20px;">
-        <input type="radio" id="tz_gmt" name="timezone_type" value="gmt" checked>
+        <input type="radio" id="tz_gmt" name="timezone_type" value="gmt">
         <label for="tz_gmt" style="display: inline;">GMT/UTC</label>
-        <input type="radio" id="tz_local" name="timezone_type" value="local" style="margin-left: 20px;">
+        <input type="radio" id="tz_local" name="timezone_type" value="local" style="margin-left: 20px;" checked>
         <label for="tz_local" style="display: inline;">Local Time</label>
     </div>
 
@@ -84,6 +93,19 @@
     </div>
 
     <script>
+        function updateAndHighlight(elementId, text) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = text;
+                const parentP = element.closest('p');
+                if (parentP) {
+                    parentP.classList.remove('highlight-animation');
+                    void parentP.offsetWidth;
+                    parentP.classList.add('highlight-animation');
+                }
+            }
+        }
+
         function getRelativeTime(date) {
             const now = new Date();
             const diffInSeconds = (date.getTime() - now.getTime()) / 1000;
@@ -152,20 +174,15 @@
             }
 
             const resultsDiv = document.getElementById('results');
-            const msSpan = document.getElementById('ms');
-            const usSpan = document.getElementById('us');
-            const nsSpan = document.getElementById('ns');
 
             const dateToIsoResultsDiv = document.getElementById('date_to_iso_results');
-            const isoUtcSpan = document.getElementById('date_to_iso_utc');
-            const isoLocalSpan = document.getElementById('date_to_iso_local');
 
             if (isNaN(dateInMs)) {
-                msSpan.textContent = 'Invalid Date';
-                usSpan.textContent = 'Invalid Date';
-                nsSpan.textContent = 'Invalid Date';
-                isoUtcSpan.textContent = 'Invalid Date';
-                isoLocalSpan.textContent = 'Invalid Date';
+                updateAndHighlight('ms', 'Invalid Date');
+                updateAndHighlight('us', 'Invalid Date');
+                updateAndHighlight('ns', 'Invalid Date');
+                updateAndHighlight('date_to_iso_utc', 'Invalid Date');
+                updateAndHighlight('date_to_iso_local', 'Invalid Date');
                 resultsDiv.style.display = 'block';
                 dateToIsoResultsDiv.style.display = 'block';
                 return;
@@ -175,13 +192,13 @@
             const us = ms * 1000n;
             const ns = us * 1000n;
 
-            msSpan.textContent = ms.toString();
-            usSpan.textContent = us.toString();
-            nsSpan.textContent = ns.toString();
+            updateAndHighlight('ms', ms.toString());
+            updateAndHighlight('us', us.toString());
+            updateAndHighlight('ns', ns.toString());
             resultsDiv.style.display = 'block';
 
             const date = new Date(dateInMs);
-            isoUtcSpan.textContent = date.toISOString();
+            updateAndHighlight('date_to_iso_utc', date.toISOString());
 
             // For local ISO string, we need to build it manually to include timezone offset
             const tzOffset = -date.getTimezoneOffset();
@@ -197,7 +214,7 @@
                 diff + pad(Math.floor(Math.abs(tzOffset) / 60)) +
                 ':' + pad(Math.abs(tzOffset) % 60);
 
-            isoLocalSpan.textContent = localIsoString;
+            updateAndHighlight('date_to_iso_local', localIsoString);
             dateToIsoResultsDiv.style.display = 'block';
         }
 
@@ -230,18 +247,14 @@
 
             const date = new Date(dateInMs);
 
-            const gmtSpan = document.getElementById('gmt_time');
-            const localSpan = document.getElementById('local_time');
-            const relativeSpan = document.getElementById('relative_time');
-
             if (isNaN(date.getTime())) {
-                gmtSpan.textContent = 'Invalid Timestamp';
-                localSpan.textContent = 'Invalid Timestamp';
-                relativeSpan.textContent = '';
+                updateAndHighlight('gmt_time', 'Invalid Timestamp');
+                updateAndHighlight('local_time', 'Invalid Timestamp');
+                updateAndHighlight('relative_time', '');
             } else {
-                gmtSpan.textContent = date.toUTCString();
-                localSpan.textContent = date.toString();
-                relativeSpan.textContent = getRelativeTime(date);
+                updateAndHighlight('gmt_time', date.toUTCString());
+                updateAndHighlight('local_time', date.toString());
+                updateAndHighlight('relative_time', getRelativeTime(date));
             }
             tsResultsDiv.style.display = 'block';
         }
