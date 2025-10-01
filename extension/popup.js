@@ -22,6 +22,9 @@ function copyToClipboard(elementId) {
         navigator.clipboard.writeText(textToCopy).then(() => {
             const originalBtn = document.querySelector(`button[data-target='${elementId}']`);
             if (originalBtn) {
+                if (originalBtn.textContent === 'Copied!') {
+                    return;
+                }
                 const originalText = originalBtn.textContent;
                 originalBtn.textContent = 'Copied!';
                 setTimeout(() => { originalBtn.textContent = originalText; }, 1500);
