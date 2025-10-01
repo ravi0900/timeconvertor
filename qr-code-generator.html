@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple and fast online tool to generate QR codes from any text or URL. Create QR codes for your websites, contact information, Wi-Fi passwords, and more.">
+    <meta name="keywords" content="qr code generator, create qr code, text to qr, url to qr, free qr code, online qr tool">
+    <title>QR Code Generator | Time Tools</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #qrcode-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #qrcode-container canvas {
+            border-radius: 4px;
+        }
+        #download-btn {
+            display: none;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="side-ad left-ad ad-container">
+        </div>
+        <div class="content-wrapper">
+            <nav>
+                <ul>
+                    <li><a href="index.html">UTC Date Converter</a></li>
+                    <li><a href="iso-converter.html">ISO 8601 Converter</a></li>
+                    <li><a href="duration-converter.html">Duration Converter</a></li>
+                    <li><a href="qr-code-generator.html" class="active">QR Code Generator</a></li>
+                    <li><a href="docs.html">Docs</a></li>
+                    <li class="theme-toggle-container"><button id="theme-toggle">🌓</button></li>
+                </ul>
+            </nav>
+
+            <div class="card">
+                <h1>QR Code Generator</h1>
+                <div class="container" style="flex-direction: column;">
+                    <label for="qr-text">Text or URL to encode:</label>
+                    <textarea id="qr-text" rows="4" placeholder="Enter any text, URL, or data here..."></textarea>
+                </div>
+                <button id="generate-btn">Generate QR Code</button>
+                <div id="qrcode-container" style="display: none;"></div>
+                <button id="download-btn">Download QR Code</button>
+            </div>
+            <div class="ad-placeholder ad-container">
+            </div>
+        </div>
+        <div class="side-ad right-ad ad-container">
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <script>
+        const generateBtn = document.getElementById('generate-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const qrContainer = document.getElementById('qrcode-container');
+        const qrText = document.getElementById('qr-text');
+
+        function generateQRCode() {
+            const text = qrText.value.trim();
+            if (!text) {
+                alert('Please enter text to generate a QR code.');
+                return;
+            }
+
+            qrContainer.innerHTML = '';
+            qrContainer.style.display = 'flex';
+
+            QRCode.toCanvas(text, { errorCorrectionLevel: 'H', width: 256 }, function (err, canvas) {
+                if (err) throw err;
+                qrContainer.appendChild(canvas);
+                downloadBtn.style.display = 'inline-block';
+
+                downloadBtn.onclick = function() {
+                    const link = document.createElement('a');
+                    link.download = 'qrcode.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                };
+            });
+        }
+        
+        generateBtn.addEventListener('click', generateQRCode);
+        qrText.addEventListener('input', () => {
+             if (qrText.value.trim() === '') {
+                qrContainer.style.display = 'none';
+                downloadBtn.style.display = 'none';
+            }
+        });
+
+        // --- Theme Toggle ---
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                const isDarkMode = body.classList.contains('dark-mode');
+                localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+                themeToggle.textContent = isDarkMode ? '☀️' : '🌒';
+            });
+
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('dark-mode');
+                themeToggle.textContent = '🌒';
+            }
+        })();
+    </script>
+    <script src="ads.js" defer></script>
+</body>
+</html>
