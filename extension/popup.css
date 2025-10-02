@@ -8,6 +8,7 @@
     --primary-color: #0d6efd;
     --primary-color-dark: #3d8bfd;
     --shadow-color: rgba(255,255,255,0.05);
+    --placeholder-text-color: #868e96;
 }
 
 body {
@@ -66,6 +67,11 @@ input[type="number"], input[type="text"] {
     color: var(--text-color);
     width: 100%;
     box-sizing: border-box;
+}
+
+input::placeholder {
+    color: var(--placeholder-text-color);
+    opacity: 1;
 }
 
 .radio-group {

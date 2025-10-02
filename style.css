@@ -12,6 +12,7 @@
     --shadow-color: rgba(0,0,0,0.1);
     --link-color: #007bff;
     --ad-placeholder-color: #999;
+    --placeholder-text-color: #6c757d;
 }
 
 body.dark-mode {
@@ -28,6 +29,7 @@ body.dark-mode {
     --shadow-color: rgba(255,255,255,0.05);
     --link-color: #3d8bfd;
     --ad-placeholder-color: #666;
+    --placeholder-text-color: #868e96;
 }
 
 body {
@@ -98,13 +100,26 @@ h1, h2 {
     min-width: 120px;
 }
 
-input[type="number"], input[type="text"] {
+input[type="number"], input[type="text"], textarea {
     padding: 8px;
     font-size: 1em;
     border: 1px solid var(--input-border-color);
     border-radius: 4px;
     background-color: var(--input-bg-color);
     color: var(--text-color);
+    font-family: inherit;
+}
+
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--placeholder-text-color);
+    opacity: 1; /* Firefox has a lower opacity for placeholders by default */
 }
 
 button {
